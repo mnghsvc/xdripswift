@@ -166,6 +166,10 @@ class BluetoothPeripheralManager: NSObject {
                     // cgm's don't receive reading, they send it
                     break
                     
+                case .Libre2HeartBeatType:
+                    // heartbeat transmitters are just there to wake up the app
+                    break
+                    
                 }
 
             }
@@ -380,6 +384,14 @@ class BluetoothPeripheralManager: NSObject {
                         }
                         
                     }
+                    
+                case .Libre2HeartBeatType:
+                    
+                    if let libre2heartbeat = bluetoothPeripheral as? Libre2HeartBeat {
+                        
+                        newTransmitter = Libre2HeartBeatBluetoothTransmitter(address: libre2heartbeat.blePeripheral.address, name: libre2heartbeat.blePeripheral.name, bluetoothTransmitterDelegate: self)
+                        
+                    }
 
                 }
                 
@@ -463,6 +475,11 @@ class BluetoothPeripheralManager: NSObject {
             case .Libre2Type:
                 if bluetoothTransmitter is CGMLibre2Transmitter {
                     return .Libre2Type
+                }
+                
+            case .Libre2HeartBeatType:
+                if bluetoothTransmitter is Libre2HeartBeatBluetoothTransmitter {
+                    return .Libre2HeartBeatType
                 }
                 
             }
@@ -569,6 +586,10 @@ class BluetoothPeripheralManager: NSObject {
             }
             
             return CGMLibre2Transmitter(address: nil, name: nil, bluetoothTransmitterDelegate: bluetoothTransmitterDelegate ?? self, cGMLibre2TransmitterDelegate: self, sensorSerialNumber: nil, cGMTransmitterDelegate: cgmTransmitterDelegate, nonFixedSlopeEnabled: nil, webOOPEnabled: nil)
+            
+        case .Libre2HeartBeatType:
+            
+            return Libre2HeartBeatBluetoothTransmitter(address: nil, name: nil, bluetoothTransmitterDelegate: bluetoothTransmitterDelegate ?? self)
 
         }
         
@@ -969,6 +990,30 @@ class BluetoothPeripheralManager: NSObject {
                         
                     }
                     
+                case .Libre2HeartBeatType:
+                    if let libre2heartbeat = blePeripheral.libre2heartbeat {
+                        
+                        blePeripheralFound = true
+                        
+                        // add it to the list of bluetoothPeripherals
+                        let index = insertInBluetoothPeripherals(bluetoothPeripheral: libre2heartbeat)
+                        
+                        if libre2heartbeat.blePeripheral.shouldconnect {
+                            
+                            // create an instance of Libre2HeartBeatBluetoothTransmitter, Libre2HeartBeatBluetoothTransmitter will automatically try to connect to the transmitter with the address that is stored in libre2heartbeat
+                            // add it to the array of bluetoothTransmitters
+                            bluetoothTransmitters.insert(Libre2HeartBeatBluetoothTransmitter(address: libre2heartbeat.blePeripheral.address, name: libre2heartbeat.blePeripheral.name, bluetoothTransmitterDelegate: self), at: index)
+                            
+                        } else {
+                            
+                            // bluetoothTransmitters array (which should have the same number of elements as bluetoothPeripherals) needs to have an empty row for the transmitter
+                            bluetoothTransmitters.insert(nil, at: index)
+                            
+                        }
+                        
+                    }
+
+                    
                 case .DropletType:
                     
                     if let droplet = blePeripheral.droplet {
@@ -1231,7 +1276,7 @@ class BluetoothPeripheralManager: NSObject {
                     bluetoothPeripheral.blePeripheral.parameterUpdateNeededAtNextConnect = true
                 }
              
-            case .WatlaaType, .DexcomType, .BubbleType, .MiaoMiaoType, .BluconType, .GNSentryType, .BlueReaderType, .DropletType, .DexcomG4Type, .Libre2Type, .AtomType:
+            case .WatlaaType, .DexcomType, .BubbleType, .MiaoMiaoType, .BluconType, .GNSentryType, .BlueReaderType, .DropletType, .DexcomG4Type, .Libre2Type, .AtomType, .Libre2HeartBeatType:
                 
                 // nothing to check
                 break

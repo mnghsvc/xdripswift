@@ -495,8 +495,7 @@ extension CGMLibre2Transmitter: LibreNFCDelegate {
     }
     
     func nfcScanSerialNumber(sensorSerialNumber: String) {
-        
-        self.updateExpectedDeviceName(sensorSerialNumber: sensorSerialNumber)
+            self.updateExpectedDeviceName(newExpectedDeviceName: "ABBOTT" + sensorSerialNumber)
         
     }
     

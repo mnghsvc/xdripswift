@@ -45,6 +45,9 @@ enum BluetoothPeripheralType: String, CaseIterable {
     
     /// Atom
     case AtomType = "Atom"
+    
+    /// to use a Libre 2 as heartbeat
+    case Libre2HeartBeatType = "Libre2 HeartBeat"
 
     /// - returns: the BluetoothPeripheralViewModel. If nil then there's no specific settings for the tpe of bluetoothPeripheral
     func viewModel() -> BluetoothPeripheralViewModel? {
@@ -89,6 +92,9 @@ enum BluetoothPeripheralType: String, CaseIterable {
             
         case .AtomType:
             return AtomBluetoothPeripheralViewModel()
+            
+        case .Libre2HeartBeatType:
+            return Libre2HeartBeatBluetoothPeripheralViewModel()
             
         }
         
@@ -155,6 +161,10 @@ enum BluetoothPeripheralType: String, CaseIterable {
             
             return Atom(address: address, name: name, alias: nil, nsManagedObjectContext: nsManagedObjectContext)
             
+        case .Libre2HeartBeatType:
+            
+            return Libre2HeartBeat(address: address, name: name, alias: nil, nsManagedObjectContext: nsManagedObjectContext)
+            
         }
         
     }
@@ -170,6 +180,9 @@ enum BluetoothPeripheralType: String, CaseIterable {
         case .DexcomType, .BubbleType, .MiaoMiaoType, .BluconType, .GNSentryType, .BlueReaderType, .DropletType, .DexcomG4Type, .WatlaaType, .Libre2Type, .AtomType:
             return .CGM
             
+        case .Libre2HeartBeatType:
+            return .HeartBeat
+            
         }
         
     }
@@ -179,7 +192,7 @@ enum BluetoothPeripheralType: String, CaseIterable {
         
         switch self {
             
-        case .M5StackType, .M5StickCType, .WatlaaType, .BubbleType, .MiaoMiaoType, .GNSentryType, .BlueReaderType, .DropletType, .Libre2Type, .AtomType:
+        case .M5StackType, .M5StickCType, .WatlaaType, .BubbleType, .MiaoMiaoType, .GNSentryType, .BlueReaderType, .DropletType, .Libre2Type, .AtomType,.Libre2HeartBeatType:
             return false
             
         case .DexcomType, .BluconType, .DexcomG4Type:
@@ -222,7 +235,7 @@ enum BluetoothPeripheralType: String, CaseIterable {
             }
             return nil
             
-        case .M5StackType, .M5StickCType, .WatlaaType, .BubbleType, .MiaoMiaoType, .GNSentryType, .BlueReaderType, .DropletType, .Libre2Type, .AtomType:
+        case .M5StackType, .M5StickCType, .WatlaaType, .BubbleType, .MiaoMiaoType, .GNSentryType, .BlueReaderType, .DropletType, .Libre2Type, .AtomType, .Libre2HeartBeatType:
             // no transmitter id means no validation to do
             return nil
             
@@ -247,7 +260,7 @@ enum BluetoothPeripheralType: String, CaseIterable {
         
         switch self {
             
-        case .M5StackType, .M5StickCType, .WatlaaType, .DexcomG4Type, .BluconType, .BlueReaderType, .DropletType , .GNSentryType:
+        case .M5StackType, .M5StickCType, .WatlaaType, .DexcomG4Type, .BluconType, .BlueReaderType, .DropletType , .GNSentryType, .Libre2HeartBeatType:
             return false
             
         case .BubbleType, .MiaoMiaoType, .AtomType, .DexcomType:
@@ -266,7 +279,7 @@ enum BluetoothPeripheralType: String, CaseIterable {
        
        switch self {
            
-       case .M5StackType, .M5StickCType, .DexcomG4Type, .DexcomType:
+       case .M5StackType, .M5StickCType, .DexcomG4Type, .DexcomType, .Libre2HeartBeatType:
            return false
            
        case .BubbleType, .MiaoMiaoType, .WatlaaType, .BluconType, .BlueReaderType, .DropletType , .GNSentryType, .AtomType:
@@ -284,7 +297,7 @@ enum BluetoothPeripheralType: String, CaseIterable {
        
        switch self {
            
-       case .M5StackType, .M5StickCType, .DexcomG4Type, .DexcomType, .BubbleType, .MiaoMiaoType, .WatlaaType, .BluconType, .BlueReaderType, .DropletType , .GNSentryType, .AtomType:
+       case .M5StackType, .M5StickCType, .DexcomG4Type, .DexcomType, .BubbleType, .MiaoMiaoType, .WatlaaType, .BluconType, .BlueReaderType, .DropletType , .GNSentryType, .AtomType, .Libre2HeartBeatType:
            return false
         
        case .Libre2Type:

@@ -169,5 +169,6 @@ enum ConstantsLog {
     /// for use in Bg Readings view
     static let categoryBgReadingsView =                         "BgReadingsView           "
     
+    static let categoryHeartBeatLibre2 =                        "HeartBeatLibre2          "
 }
 
